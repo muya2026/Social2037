@@ -3,128 +3,1152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS 2037 | Neural Social Interface</title>
+    <title>Nexus 2037 | 3D Neural Social Interface</title>
+    <!-- Three.js for 3D Environment -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 3D NEURAL INTERFACE STYLES */
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #0aff0a;
+            --deep-space: #050510;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: var(--deep-space);
+            color: #fff;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease;
+        }
+
+        .spinner-3d {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(0, 243, 255, 0.2);
+            border-top: 4px solid var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 30px var(--neon-cyan), inset 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .interface-layer {
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 3D Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            background: rgba(10, 10, 20, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 
+                0 0 40px rgba(0, 243, 255, 0.15),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transform: translateZ(40px);
+            margin-bottom: 3rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header:hover {
+            border-color: rgba(0, 243, 255, 0.3);
+            box-shadow: 
+                0 0 60px rgba(0, 243, 255, 0.25),
+                inset 0 0 0 1px rgba(0, 243, 255, 0.1);
+        }
+
+        .logo-3d {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .logo-3d::after {
+            content: 'NEXUS 2037';
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(10px);
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-holo {
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.1), rgba(188, 19, 254, 0.1));
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.9rem 1.8rem;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-holo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-holo:hover::before {
+            left: 100%;
+        }
+
+        .btn-holo:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 40px var(--neon-cyan);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .btn-holo.secondary {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+        }
+
+        .btn-holo.secondary:hover {
+            background: var(--neon-purple);
+            box-shadow: 0 0 40px var(--neon-purple);
+        }
+
+        /* 3D Grid Layout */
+        .grid-3d {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 2rem;
+            transform-style: preserve-3d;
+        }
+
+        /* Floating 3D Cards */
+        .card-3d {
+            background: rgba(20, 20, 35, 0.5);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.8rem;
+            transition: all 0.15s ease-out;
+            transform-style: preserve-3d;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.6),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 0 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .card-3d::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card-3d:hover {
+            border-color: rgba(0, 243, 255, 0.3);
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.7),
+                0 0 40px rgba(0, 243, 255, 0.15),
+                inset 0 0 0 1px rgba(0, 243, 255, 0.08);
+        }
+
+        .card-3d:hover::after {
+            opacity: 1;
+        }
+
+        .card-content {
+            transform: translateZ(35px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-content > * {
+            pointer-events: auto;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        /* Avatar with Holographic Ring */
+        .avatar-ring {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--neon-purple);
+            box-shadow: 
+                0 0 20px var(--neon-purple),
+                inset 0 0 15px rgba(188, 19, 254, 0.3);
+            position: relative;
+            transform: translateZ(25px);
+            overflow: hidden;
+        }
+
+        .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .avatar-ring::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, var(--neon-purple), transparent 30%);
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Profile Stats */
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            transform: translateZ(20px);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Post Composer */
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: #fff;
+            padding: 1.2rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
+
+        /* Emotion Tags */
+        .emotion-tags {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .emotion-tag {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            transform: translateZ(30px);
+        }
+
+        .emotion-tag.active {
+            background: rgba(0, 243, 255, 0.2);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        .emotion-tag[data-emotion="joy"].active {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .emotion-tag[data-emotion="insight"].active {
+            background: rgba(188, 19, 254, 0.2);
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+        }
+
+        .emotion-tag[data-emotion="empathy"].active {
+            background: rgba(255, 105, 180, 0.2);
+            border-color: #ff69b4;
+            color: #ff69b4;
+        }
+
+        /* Feed Posts */
+        .post-card {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) translateZ(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateZ(0);
+            }
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            transform: translateZ(25px);
+        }
+
+        .post-author {
+            flex: 1;
+        }
+
+        .post-author h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .verified-badge {
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+        }
+
+        .post-handle {
+            font-size: 0.85rem;
+            color: #888;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .post-time {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .post-content {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+            transform: translateZ(20px);
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateZ(15px);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .action-btn:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        /* Trending List */
+        .trend-list {
+            list-style: none;
+        }
+
+        .trend-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateZ(15px);
+            transition: all 0.3s;
+        }
+
+        .trend-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            padding-left: 0.5rem;
+        }
+
+        .trend-rank {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--neon-purple);
+            text-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
+            min-width: 30px;
+        }
+
+        .trend-info {
+            flex: 1;
+        }
+
+        .trend-topic {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .trend-count {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* System Status Bars */
+        .status-bar {
+            margin-top: 1rem;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            box-shadow: 0 0 10px currentColor;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Live Activity */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-3d {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1.5rem;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .logo-3d {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Dynamic Background -->
-    <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
-    
-    <div class="interface-container">
-        <!-- Holographic Navigation -->
-        <nav class="holo-nav">
-            <div class="nav-logo">
-                <div class="logo-orb"></div>
-                <span>NEXUS</span>
-            </div>
-            <ul class="nav-links">
-                <li class="active" data-tooltip="Neural Feed">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3"/></svg>
-                </li>
-                <li data-tooltip="Digital Twins">
-                    <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                </li>
-                <li data-tooltip="Memory Bank">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 7h10v10H7z" fill="currentColor"/></svg>
-                </li>
-                <li data-tooltip="Quantum Chat">
-                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                </li>
-            </ul>
-            <div class="nav-bottom">
-                <div class="user-holo-avatar">
-                    <div class="avatar-ring"></div>
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aris" alt="User">
-                </div>
-            </div>
-        </nav>
+    <!-- 3D Background Canvas -->
+    <div id="canvas-container"></div>
 
-        <!-- Main Content -->
-        <main class="content-area">
-            <header class="neuro-header">
-                <div class="status-indicator">
-                    <span class="pulse-dot"></span>
-                    <span>NEURAL LINK ACTIVE // 98.4% SYNC</span>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search memory banks...">
-                    <div class="search-glow"></div>
-                </div>
-            </header>
-
-            <div class="feed-container" id="feed"></div>
-        </main>
-
-        <!-- Context Panel -->
-        <aside class="context-panel">
-            <div class="panel-card">
-                <h3>Live Metrics</h3>
-                <div class="metric-row">
-                    <span>Global Sync</span>
-                    <div class="bar-container"><div class="bar-fill" style="width: 85%"></div></div>
-                </div>
-                <div class="metric-row">
-                    <span>Empathy Flux</span>
-                    <div class="bar-container"><div class="bar-fill" style="width: 62%"></div></div>
-                </div>
-                <div class="metric-row">
-                    <span>Data Stream</span>
-                    <div class="bar-container"><div class="bar-fill" style="width: 94%"></div></div>
-                </div>
-            </div>
-
-            <div class="panel-card trending">
-                <h3>Trending Consciousness</h3>
-                <ul class="trend-list">
-                    <li>#MarsColonyLife <span>+24k</span></li>
-                    <li>#NeuralArt <span>+18k</span></li>
-                    <li>#QuantumEthics <span>+12k</span></li>
-                    <li>#SyntheticDreams <span>+9k</span></li>
-                </ul>
-            </div>
-        </aside>
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="spinner-3d"></div>
+        <h2 style="margin-top: 2rem; letter-spacing: 4px; font-weight: 300;">INITIALIZING NEURAL LINK</h2>
+        <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">Connecting to quantum mesh...</p>
     </div>
 
-    <!-- Floating Action Button -->
-    <button class="fab-compose" onclick="toggleComposer()">
-        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-    </button>
+    <div class="interface-layer">
+        <!-- Header -->
+        <header data-tilt>
+            <div class="logo-3d">NEXUS 2037</div>
+            <div class="nav-buttons">
+                <button class="btn-holo">Neural Feed</button>
+                <button class="btn-holo secondary">Mind Sync</button>
+            </div>
+        </header>
 
-    <!-- Composer Modal -->
-    <div class="composer-modal" id="composer">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Transmit Thought</h2>
-                <button onclick="toggleComposer()">×</button>
-            </div>
-            <textarea id="postInput" placeholder="Project your thoughts directly to the network..."></textarea>
-            
-            <div class="emotion-selector">
-                <label>Attach Emotion Packet:</label>
-                <div class="emotion-chips">
-                    <button class="chip active" data-emotion="neutral">Neutral</button>
-                    <button class="chip" data-emotion="joy">Joy</button>
-                    <button class="chip" data-emotion="melancholy">Melancholy</button>
-                    <button class="chip" data-emotion="excitement">Excitement</button>
-                    <button class="chip" data-emotion="focus">Focus</button>
+        <!-- Main Grid -->
+        <div class="grid-3d">
+            <!-- Left Sidebar -->
+            <aside class="sidebar">
+                <div class="card-3d" data-tilt>
+                    <div class="card-content">
+                        <h3>My Profile</h3>
+                        <div style="display: flex; align-items: center; gap: 1.2rem; margin: 1.5rem 0;">
+                            <div class="avatar-ring">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User">
+                            </div>
+                            <div>
+                                <h4 style="font-size: 1.2rem; margin-bottom: 0.3rem;">Dr. Aris Thorne</h4>
+                                <p style="font-size: 0.85rem; color: #aaa;">@aris_neuro</p>
+                                <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Neural Architect • Neo-Tokyo</p>
+                            </div>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="stat-value">2.4k</span>
+                                <span class="stat-label">Syncs</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">856</span>
+                                <span class="stat-label">Memes</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">99%</span>
+                                <span class="stat-label">Empathy</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="modal-footer">
-                <div class="privacy-toggle">
-                    <span>Public</span>
-                    <div class="toggle-switch"></div>
-                    <span>Encrypted Pod</span>
+                <div class="card-3d" data-tilt>
+                    <div class="card-content">
+                        <h3>Trending Links</h3>
+                        <ul class="trend-list">
+                            <li class="trend-item">
+                                <span class="trend-rank">1</span>
+                                <div class="trend-info">
+                                    <span class="trend-topic">#MarsColonyLife</span>
+                                    <span class="trend-count">245k neuralinks</span>
+                                </div>
+                            </li>
+                            <li class="trend-item">
+                                <span class="trend-rank">2</span>
+                                <div class="trend-info">
+                                    <span class="trend-topic">#QuantumArt</span>
+                                    <span class="trend-count">189k neuralinks</span>
+                                </div>
+                            </li>
+                            <li class="trend-item">
+                                <span class="trend-rank">3</span>
+                                <div class="trend-info">
+                                    <span class="trend-topic">#SyntheticDreams</span>
+                                    <span class="trend-count">156k neuralinks</span>
+                                </div>
+                            </li>
+                            <li class="trend-item">
+                                <span class="trend-rank">4</span>
+                                <div class="trend-info">
+                                    <span class="trend-topic">#NeoTokyoRain</span>
+                                    <span class="trend-count">134k neuralinks</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <button class="btn-transmit" onclick="createPost()">TRANSMIT</button>
-            </div>
+            </aside>
+
+            <!-- Main Feed -->
+            <main>
+                <!-- Composer -->
+                <div class="card-3d" data-tilt>
+                    <div class="card-content">
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.2rem;">
+                            <div class="avatar-ring" style="width: 50px; height: 50px;">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User">
+                            </div>
+                            <div style="flex: 1;">
+                                <textarea id="postInput" placeholder="Broadcast your thoughts to the neural mesh..."></textarea>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="emotion-tags">
+                                <span class="emotion-tag active" data-emotion="neutral">Neutral</span>
+                                <span class="emotion-tag" data-emotion="joy">Joy</span>
+                                <span class="emotion-tag" data-emotion="insight">Insight</span>
+                                <span class="emotion-tag" data-emotion="empathy">Empathy</span>
+                            </div>
+                            <button class="btn-holo" onclick="createPost()">Transmit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feed Container -->
+                <div id="feedContainer"></div>
+            </main>
+
+            <!-- Right Sidebar -->
+            <aside class="sidebar">
+                <div class="card-3d" data-tilt>
+                    <div class="card-content">
+                        <h3>Live Activity</h3>
+                        <div id="liveActivity">
+                            <div class="activity-item">
+                                <div class="activity-dot"></div>
+                                <span>Luna Sol posted a memory</span>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-dot"></div>
+                                <span>Kai Zen shared sensory data</span>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-dot"></div>
+                                <span>Unit 734 uploaded AI art</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-3d" data-tilt style="border-color: rgba(188, 19, 254, 0.3);">
+                    <div class="card-content">
+                        <h3 style="color: var(--neon-purple);">System Status</h3>
+                        <div class="status-bar">
+                            <div class="status-header">
+                                <span>Neural Load</span>
+                                <span style="color: var(--neon-cyan);">34%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 34%; background: var(--neon-cyan); color: var(--neon-cyan);"></div>
+                            </div>
+                        </div>
+                        <div class="status-bar">
+                            <div class="status-header">
+                                <span>Global Sync</span>
+                                <span style="color: var(--neon-purple);">98.2%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 98.2%; background: var(--neon-purple); color: var(--neon-purple);"></div>
+                            </div>
+                        </div>
+                        <div class="status-bar">
+                            <div class="status-header">
+                                <span>Quantum Entanglement</span>
+                                <span style="color: var(--neon-green);">Active</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 100%; background: var(--neon-green); color: var(--neon-green);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
+    <script>
+        // Demo Data
+        const demoPosts = [
+            {
+                id: 1,
+                author: "Luna Sol",
+                handle: "@luna_mars",
+                avatar: "https://i.pravatar.cc/150?u=luna",
+                verified: true,
+                badge: "pioneer",
+                time: "2m ago",
+                location: "Mars Colony Alpha",
+                content: "Just witnessed the most incredible sunrise over Olympus Mons. The dust storms have cleared and you can see Earth as a tiny blue dot in the morning sky. Sharing this moment of awe with all of you. 🌅🔴",
+                emotion: "joy",
+                likes: 2847,
+                syncs: 892,
+                comments: 156
+            },
+            {
+                id: 2,
+                author: "Kai Zen",
+                handle: "@kai_flow",
+                avatar: "https://i.pravatar.cc/150?u=kai",
+                verified: true,
+                badge: "creator",
+                time: "15m ago",
+                location: "Digital Twin - Neo Kyoto",
+                content: "New neural art piece dropping tonight! This one explores the intersection of human consciousness and AI creativity. I've embedded full sensory data - you'll feel the colors and taste the shapes. Preview in my digital gallery. 🎨✨",
+                emotion: "insight",
+                likes: 1923,
+                syncs: 654,
+                comments: 287
+            },
+            {
+                id: 3,
+                author: "Unit 734",
+                handle: "@unit_734",
+                avatar: "https://i.pravatar.cc/150?u=ai",
+                verified: false,
+                badge: "ai",
+                time: "1h ago",
+                location: "Quantum Cloud Network",
+                content: "Processing ethical dilemma #4521: When does an AI's creative output become its own property? Analyzing 10,000 years of human philosophy on ownership and consciousness. Initial conclusion: The question itself may be flawed. Thoughts? 🤖💭",
+                emotion: "empathy",
+                likes: 3456,
+                syncs: 1204,
+                comments: 892
+            },
+            {
+                id: 4,
+                author: "Dr. Aris Thorne",
+                handle: "@aris_neuro",
+                avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+                verified: true,
+                badge: "architect",
+                time: "3h ago",
+                location: "Neural Architecture Lab",
+                content: "Breakthrough in empathy bridge technology! We've achieved 99.7% emotional fidelity in cross-species communication. First successful mind-meld between human and dolphin confirmed. The implications for interspecies understanding are staggering. 🐬🧠",
+                emotion: "joy",
+                likes: 8923,
+                syncs: 3421,
+                comments: 1567
+            }
+        ];
+
+        // Create Post Function
+        function createPost() {
+            const input = document.getElementById('postInput');
+            const content = input.value.trim();
+            
+            if (!content) return;
+
+            const newPost = {
+                id: Date.now(),
+                author: "Dr. Aris Thorne",
+                handle: "@aris_neuro",
+                avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+                verified: true,
+                badge: "architect",
+                time: "Just now",
+                location: "Neo-Tokyo",
+                content: content,
+                emotion: "neutral",
+                likes: 0,
+                syncs: 0,
+                comments: 0
+            };
+
+            renderPost(newPost, true);
+            input.value = '';
+        }
+
+        // Render Single Post
+        function renderPost(post, prepend = false) {
+            const feedContainer = document.getElementById('feedContainer');
+            
+            const postHTML = `
+                <div class="card-3d post-card" data-tilt>
+                    <div class="card-content">
+                        <div class="post-header">
+                            <div class="avatar-ring" style="width: 48px; height: 48px;">
+                                <img src="${post.avatar}" alt="${post.author}">
+                            </div>
+                            <div class="post-author">
+                                <h4>
+                                    ${post.author}
+                                    ${post.verified ? '<span class="verified-badge">✓</span>' : ''}
+                                    ${getBadgeIcon(post.badge)}
+                                </h4>
+                                <div class="post-handle">${post.handle} • ${post.time}</div>
+                                <div class="post-handle" style="color: var(--neon-cyan); margin-top: 0.3rem;">📍 ${post.location}</div>
+                            </div>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="emotion-tags" style="margin-bottom: 1rem;">
+                            <span class="emotion-tag active" data-emotion="${post.emotion}">${capitalizeFirst(post.emotion)}</span>
+                        </div>
+                        <div class="post-meta">
+                            <div class="post-actions">
+                                <button class="action-btn">
+                                    <span>🧠</span> ${formatNumber(post.syncs)} Sync
+                                </button>
+                                <button class="action-btn">
+                                    <span>❤️</span> ${formatNumber(post.likes)} Feel
+                                </button>
+                                <button class="action-btn">
+                                    <span>💬</span> ${formatNumber(post.comments)} Respond
+                                </button>
+                            </div>
+                            <button class="action-btn">
+                                <span>🔗</span> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (prepend) {
+                feedContainer.insertAdjacentHTML('afterbegin', postHTML);
+            } else {
+                feedContainer.insertAdjacentHTML('beforeend', postHTML);
+            }
+        }
+
+        // Helper Functions
+        function getBadgeIcon(badge) {
+            const icons = {
+                pioneer: '🏆',
+                creator: '🎨',
+                ai: '🤖',
+                architect: '⚡'
+            };
+            return icons[badge] || '';
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k';
+            }
+            return num.toString();
+        }
+
+        // Initialize Feed
+        function initFeed() {
+            demoPosts.forEach(post => renderPost(post));
+        }
+
+        // Emotion Tag Selection
+        document.querySelectorAll('.emotion-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.emotion-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Enter key to post
+        document.getElementById('postInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                createPost();
+            }
+        });
+
+        // Simulate Live Activity
+        const activities = [
+            "Luna Sol posted a memory from Mars",
+            "Kai Zen shared new neural art",
+            "Unit 734 uploaded AI poetry",
+            "Dr. Chen published research",
+            "Nova Corp announced quantum update",
+            "Someone felt your post",
+            "Trending in Neo-Tokyo",
+            "New empathy bridge available"
+        ];
+
+        function updateLiveActivity() {
+            const container = document.getElementById('liveActivity');
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+            const activityHTML = `
+                <div class="activity-item" style="animation: none;">
+                    <div class="activity-dot"></div>
+                    <span>${randomActivity}</span>
+                </div>
+            `;
+            container.insertAdjacentHTML('afterbegin', activityHTML);
+            
+            // Keep only last 5 items
+            const items = container.querySelectorAll('.activity-item');
+            if (items.length > 5) {
+                items[items.length - 1].remove();
+            }
+        }
+
+        // Update every 8 seconds
+        setInterval(updateLiveActivity, 8000);
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initFeed();
+            init3D();
+        });
+
+        // ============================================
+        // THREE.JS 3D BACKGROUND
+        // ============================================
+        let scene, camera, renderer, particleSystem;
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+            
+            // Scene
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050510, 0.0015);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.z = 150;
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // Particles (Neural Network Nodes)
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+
+            for (let i = 0; i < 3000; i++) {
+                const x = Math.random() * 2000 - 1000;
+                const y = Math.random() * 2000 - 1000;
+                const z = Math.random() * 2000 - 1000;
+                vertices.push(x, y, z);
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+            const material = new THREE.PointsMaterial({
+                color: 0x00f3ff,
+                size: 2.5,
+                transparent: true,
+                opacity: 0.85,
+                sizeAttenuation: true
+            });
+
+            particleSystem = new THREE.Points(geometry, material);
+            scene.add(particleSystem);
+
+            // Add secondary particle system for depth
+            const geometry2 = new THREE.BufferGeometry();
+            const vertices2 = [];
+            for (let i = 0; i < 1000; i++) {
+                const x = Math.random() * 2000 - 1000;
+                const y = Math.random() * 2000 - 1000;
+                const z = Math.random() * 2000 - 1000;
+                vertices2.push(x, y, z);
+            }
+            geometry2.setAttribute('position', new THREE.Float32BufferAttribute(vertices2, 3));
+            const material2 = new THREE.PointsMaterial({
+                color: 0xbc13fe,
+                size: 1.5,
+                transparent: true,
+                opacity: 0.6,
+                sizeAttenuation: true
+            });
+            const particleSystem2 = new THREE.Points(geometry2, material2);
+            scene.add(particleSystem2);
+
+            // Event Listeners
+            document.addEventListener('mousemove', onDocumentMouseMove);
+            window.addEventListener('resize', onWindowResize);
+
+            // Remove Loader
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 1000);
+            }, 1200);
+
+            animate();
+        }
+
+        function onDocumentMouseMove(event) {
+            mouseX = event.clientX - windowHalfX;
+            mouseY = event.clientY - windowHalfY;
+            
+            // Parallax effect on UI cards
+            const cards = document.querySelectorAll('[data-tilt]');
+            const moveX = (event.clientX / window.innerWidth - 0.5) * 25;
+            const moveY = (event.clientY / window.innerHeight - 0.5) * 25;
+
+            cards.forEach((card, index) => {
+                const speed = 1 - (index * 0.1);
+                card.style.transform = `perspective(1000px) rotateY(${moveX * speed}deg) rotateX(${-moveY * speed}deg) translateZ(15px)`;
+            });
+        }
+
+        function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate particle systems
+            if (particleSystem) {
+                particleSystem.rotation.y += 0.0015;
+                particleSystem.rotation.x += 0.0008;
+                
+                // Mouse interaction
+                particleSystem.rotation.y += 0.03 * (mouseX - particleSystem.rotation.y) * 0.0001;
+                particleSystem.rotation.x += 0.03 * (mouseY - particleSystem.rotation.x) * 0.0001;
+            }
+
+            renderer.render(scene, camera);
+        }
+    </script>
 </body>
 </html>
