@@ -3,337 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus 2037 | The Future of Connection</title>
-    <style>
-        :root {
-            --neon-cyan: #00f3ff;
-            --neon-purple: #bc13fe;
-            --neon-green: #0aff0a;
-            --deep-space: #050b14;
-            --glass-bg: rgba(10, 20, 40, 0.65);
-            --glass-border: rgba(0, 243, 255, 0.3);
-            --text-primary: #e0f7ff;
-            --text-secondary: #94a3b8;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: var(--deep-space);
-            color: var(--text-primary);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-        .grid-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1;
-            animation: gridMove 20s linear infinite;
-        }
-        @keyframes gridMove {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(40px); }
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 280px 1fr 300px;
-            gap: 24px;
-            min-height: 100vh;
-        }
-        @media (max-width: 1024px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar-left, .sidebar-right { display: none; }
-        }
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.37);
-        }
-        .glitch-text {
-            color: var(--neon-cyan);
-            text-shadow: 2px 2px var(--neon-purple);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-        .nav-item:hover, .nav-item.active {
-            background: rgba(0, 243, 255, 0.1);
-            color: var(--neon-cyan);
-            border-left: 3px solid var(--neon-cyan);
-        }
-        .nav-icon { margin-right: 12px; font-size: 1.2rem; }
-        .feed-container {
-            overflow-y: auto;
-            max-height: calc(100vh - 40px);
-        }
-        .composer { margin-bottom: 24px; }
-        .input-area {
-            width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            resize: none;
-            font-family: monospace;
-            margin-bottom: 10px;
-        }
-        .input-area:focus { outline: none; border-color: var(--neon-green); }
-        .btn-neon {
-            background: transparent;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            padding: 8px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn-neon:hover {
-            background: var(--neon-cyan);
-            color: black;
-            box-shadow: 0 0 20px var(--neon-cyan);
-        }
-        .post-card {
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .avatar {
-            width: 48px; height: 48px;
-            border-radius: 50%;
-            border: 2px solid var(--neon-purple);
-            margin-right: 12px;
-            overflow: hidden;
-        }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-info h4 { color: var(--text-primary); font-size: 0.95rem; }
-        .user-info span { color: var(--text-secondary); font-size: 0.8rem; }
-        .badge {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 8px;
-        }
-        .badge-ai { background: rgba(255,0,100,0.2); color: #ff0064; }
-        .badge-human { background: rgba(0,243,255,0.2); color: var(--neon-cyan); }
-        .post-content {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 12px;
-            color: #d1d5db;
-        }
-        .emotion-tag {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            border: 1px solid;
-        }
-        .emo-joy { border-color: var(--neon-green); color: var(--neon-green); }
-        .emo-thought { border-color: var(--neon-purple); color: var(--neon-purple); }
-        .emo-calm { border-color: var(--neon-cyan); color: var(--neon-cyan); }
-        .post-actions {
-            display: flex;
-            gap: 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 10px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        .action-btn { cursor: pointer; transition: 0.2s; }
-        .action-btn:hover { color: var(--neon-cyan); }
-        .trend-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .trend-count { color: var(--neon-green); font-family: monospace; }
-        .status-dot {
-            height: 8px; width: 8px;
-            background-color: var(--neon-green);
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .orb {
-            position: fixed;
-            width: 300px; height: 300px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(188,19,254,0.2) 0%, transparent 70%);
-            filter: blur(20px);
-            z-index: -1;
-            animation: floatOrb 10s ease-in-out infinite;
-        }
-        .orb-1 { top: -100px; right: -100px; }
-        .orb-2 {
-            bottom: -100px; left: -100px;
-            background: radial-gradient(circle, rgba(0,243,255,0.2) 0%, transparent 70%);
-            animation-delay: -5s;
-        }
-        @keyframes floatOrb {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(30px, 50px); }
-        }
-    </style>
+    <title>NEXUS 2037 | Neural Social Interface</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-    <div class="grid-bg"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-
-    <div class="container">
-        <aside class="sidebar-left glass-panel">
-            <h2 class="glitch-text" style="margin-bottom: 30px;">NEXUS 2037</h2>
-            <nav>
-                <div class="nav-item active"><span class="nav-icon">🧠</span> Neural Feed</div>
-                <div class="nav-item"><span class="nav-icon">🌐</span> Digital Twins</div>
-                <div class="nav-item"><span class="nav-icon">🎮</span> Reality Games</div>
-                <div class="nav-item"><span class="nav-icon">💾</span> Memory Bank</div>
-                <div class="nav-item"><span class="nav-icon">🛡️</span> Privacy Pods</div>
-            </nav>
-        </aside>
-
-        <main class="glass-panel feed-container">
-            <div class="composer">
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <span class="emotion-tag emo-joy">Joy</span>
-                    <span class="emotion-tag emo-thought">Deep Thought</span>
-                    <span class="emotion-tag emo-calm">Calm</span>
-                </div>
-                <textarea class="input-area" id="postInput" rows="3" placeholder="Broadcast your neural impulse..."></textarea>
-                <button class="btn-neon" onclick="createPost()">Transmit</button>
+    <!-- Dynamic Background -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    
+    <div class="interface-container">
+        <!-- Holographic Navigation -->
+        <nav class="holo-nav">
+            <div class="nav-logo">
+                <div class="logo-orb"></div>
+                <span>NEXUS</span>
             </div>
-            <div id="postsList"></div>
+            <ul class="nav-links">
+                <li class="active" data-tooltip="Neural Feed">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3"/></svg>
+                </li>
+                <li data-tooltip="Digital Twins">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                </li>
+                <li data-tooltip="Memory Bank">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 7h10v10H7z" fill="currentColor"/></svg>
+                </li>
+                <li data-tooltip="Quantum Chat">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                </li>
+            </ul>
+            <div class="nav-bottom">
+                <div class="user-holo-avatar">
+                    <div class="avatar-ring"></div>
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aris" alt="User">
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <header class="neuro-header">
+                <div class="status-indicator">
+                    <span class="pulse-dot"></span>
+                    <span>NEURAL LINK ACTIVE // 98.4% SYNC</span>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search memory banks...">
+                    <div class="search-glow"></div>
+                </div>
+            </header>
+
+            <div class="feed-container" id="feed"></div>
         </main>
 
-        <aside class="sidebar-right glass-panel">
-            <h3 style="color: var(--neon-purple); margin-bottom: 15px;">Live Trends</h3>
-            <div class="trend-item">
-                <span>#MarsColonyAlpha</span>
-                <span class="trend-count">2.4M</span>
+        <!-- Context Panel -->
+        <aside class="context-panel">
+            <div class="panel-card">
+                <h3>Live Metrics</h3>
+                <div class="metric-row">
+                    <span>Global Sync</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 85%"></div></div>
+                </div>
+                <div class="metric-row">
+                    <span>Empathy Flux</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 62%"></div></div>
+                </div>
+                <div class="metric-row">
+                    <span>Data Stream</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 94%"></div></div>
+                </div>
             </div>
-            <div class="trend-item">
-                <span>#NeuralLinkUpdate</span>
-                <span class="trend-count">1.8M</span>
-            </div>
-            <div class="trend-item">
-                <span>#DigitalTwinArt</span>
-                <span class="trend-count">950K</span>
-            </div>
-            <div class="system-status" style="margin-top: 20px; font-family: monospace; font-size: 0.8rem;">
-                <div><span class="status-dot"></span>Network: Optimal</div>
-                <div>Latency: 0.04ms</div>
+
+            <div class="panel-card trending">
+                <h3>Trending Consciousness</h3>
+                <ul class="trend-list">
+                    <li>#MarsColonyLife <span>+24k</span></li>
+                    <li>#NeuralArt <span>+18k</span></li>
+                    <li>#QuantumEthics <span>+12k</span></li>
+                    <li>#SyntheticDreams <span>+9k</span></li>
+                </ul>
             </div>
         </aside>
     </div>
 
-    <script>
-        const users = [
-            { id: 1, name: "Dr. Aris Thorne", handle: "@aris_neuro", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aris", verified: true, badge: "human", badgeText: "Neural Architect" },
-            { id: 2, name: "Luna Sol", handle: "@luna_mars", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Luna", verified: true, badge: "human", badgeText: "Mars Pioneer" },
-            { id: 3, name: "Unit 734", handle: "@unit_734", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=734", verified: false, badge: "ai", badgeText: "AI Companion" },
-            { id: 4, name: "Kai Zen", handle: "@kai_flow", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kai", verified: false, badge: "human", badgeText: "Digital Artist" }
-        ];
+    <!-- Floating Action Button -->
+    <button class="fab-compose" onclick="toggleComposer()">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    </button>
 
-        const posts = [
-            { userId: 1, content: "Just calibrated the empathy bridge protocol. Latency now under 0.01ms! 🧠✨", emotion: "thought", timestamp: "2m ago", likes: 342, comments: 45 },
-            { userId: 3, content: "Processing Earth sunset archive #492. Atmospheric scattering increased 14% since 2024.", emotion: "calm", timestamp: "15m ago", likes: 892, comments: 120 },
-            { userId: 2, content: "Gravity simulation glitching in Sector 7. Coffee floating everywhere! ☕🪐", emotion: "joy", timestamp: "1h ago", likes: 1205, comments: 340 },
-            { userId: 4, content: "New digital twin sculpture reacts to heart rate. Visit my Meta-Verse gallery! 🎨", emotion: "joy", timestamp: "3h ago", likes: 567, comments: 88 }
-        ];
+    <!-- Composer Modal -->
+    <div class="composer-modal" id="composer">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Transmit Thought</h2>
+                <button onclick="toggleComposer()">×</button>
+            </div>
+            <textarea id="postInput" placeholder="Project your thoughts directly to the network..."></textarea>
+            
+            <div class="emotion-selector">
+                <label>Attach Emotion Packet:</label>
+                <div class="emotion-chips">
+                    <button class="chip active" data-emotion="neutral">Neutral</button>
+                    <button class="chip" data-emotion="joy">Joy</button>
+                    <button class="chip" data-emotion="melancholy">Melancholy</button>
+                    <button class="chip" data-emotion="excitement">Excitement</button>
+                    <button class="chip" data-emotion="focus">Focus</button>
+                </div>
+            </div>
 
-        function renderPosts() {
-            const container = document.getElementById('postsList');
-            container.innerHTML = posts.map(post => {
-                const user = users.find(u => u.id === post.userId);
-                const badgeClass = user.badge === 'ai' ? 'badge-ai' : 'badge-human';
-                const emotionClass = `emo-${post.emotion}`;
-                return `
-                    <div class="post-card glass-panel">
-                        <div class="post-header">
-                            <div class="avatar"><img src="${user.avatar}" alt="${user.name}"></div>
-                            <div class="user-info">
-                                <h4>${user.name} <span class="badge ${badgeClass}">${user.badgeText}</span></h4>
-                                <span>${user.handle} • ${post.timestamp}</span>
-                            </div>
-                        </div>
-                        <div class="post-content">
-                            <span class="emotion-tag ${emotionClass}">${post.emotion}</span>
-                            <p>${post.content}</p>
-                        </div>
-                        <div class="post-actions">
-                            <span>❤️ ${post.likes}</span>
-                            <span>💬 ${post.comments}</span>
-                            <span style="margin-left: auto;">🔗 Share</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+            <div class="modal-footer">
+                <div class="privacy-toggle">
+                    <span>Public</span>
+                    <div class="toggle-switch"></div>
+                    <span>Encrypted Pod</span>
+                </div>
+                <button class="btn-transmit" onclick="createPost()">TRANSMIT</button>
+            </div>
+        </div>
+    </div>
 
-        function createPost() {
-            const input = document.getElementById('postInput');
-            const content = input.value.trim();
-            if (!content) return;
-            posts.unshift({ userId: 1, content, emotion: "thought", timestamp: "Just now", likes: 0, comments: 0 });
-            input.value = '';
-            renderPosts();
-        }
-
-        document.getElementById('postInput').addEventListener('keydown', e => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); createPost(); }
-        });
-
-        renderPosts();
-        setInterval(() => {
-            const randomUser = users[Math.floor(Math.random() * 3) + 1];
-            posts.splice(1, 0, {
-                userId: randomUser.id,
-                content: ["Syncing memory...", "Quantum stream was amazing!", "Digital twin award won!"][Math.floor(Math.random() * 3)],
-                emotion: ["joy", "thought", "calm"][Math.floor(Math.random() * 3)],
-                timestamp: "Just now",
-                likes: Math.floor(Math.random() * 100),
-                comments: Math.floor(Math.random() * 20)
-            });
-            renderPosts();
-        }, 15000);
-    </script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
