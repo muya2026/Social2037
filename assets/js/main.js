@@ -1,319 +1,363 @@
-// Nexus 2037 - Interactive Demo JavaScript
-// ============================================
+/**
+ * NEXUS 2037 - Neural Social Interface
+ * Interactive Demo with Futuristic Features
+ */
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Sample data for the feed
-    const samplePosts = [
-        {
-            id: 1,
-            author: 'Alex Chen',
-            avatar: '👤',
-            time: '2m ago',
-            content: 'Just experienced an incredible sunset memory shared by someone in Tokyo. The emotion sync made me feel their genuine awe and peace. This is the future of empathy! 💫',
-            type: 'emotion',
-            likes: 234,
-            shares: 45,
-            comments: 28
-        },
-        {
-            id: 2,
-            author: 'Sam Rivera',
-            avatar: '🎨',
-            time: '15m ago',
-            content: 'Our team just completed the first collaborative thought sculpture in the Digital Twin City! Over 50 minds contributed to this evolving masterpiece. Check it out at coordinates 40.7128, -74.0060 🏙️',
-            type: 'memory',
-            likes: 892,
-            shares: 156,
-            comments: 89
-        },
-        {
-            id: 3,
-            author: 'Jordan Kim',
-            avatar: '🎮',
-            time: '1h ago',
-            content: 'Who\'s joining tonight\'s Reality Quest? We\'re solving the Mystery of the Quantum Gardens. 100+ players already registered. Bring your best puzzle-solving neural patterns! 🧩',
-            type: 'thought',
-            likes: 567,
-            shares: 234,
-            comments: 145
-        },
-        {
-            id: 4,
-            author: 'Maya Patel',
-            avatar: '🌍',
-            time: '2h ago',
-            content: 'The Global Mind Mesh just hit 2.4 billion connected consciousnesses! Grateful to be part of this historic moment. Here\'s to breaking down all barriers between human minds 🚀',
-            type: 'location',
-            likes: 1523,
-            shares: 678,
-            comments: 312
-        }
-    ];
+// Demo Data - Future Profiles & Posts
+const demoProfiles = [
+    {
+        id: 1,
+        name: "Dr. Aris Thorne",
+        handle: "@aris_neuro",
+        avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Aris&backgroundColor=transparent",
+        verified: true,
+        location: "Neo-Tokyo, Sector 7"
+    },
+    {
+        id: 2,
+        name: "Luna Sol",
+        handle: "@luna_mars",
+        avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Luna&backgroundColor=transparent",
+        verified: true,
+        badge: "Pioneer",
+        location: "Mars Colony Alpha"
+    },
+    {
+        id: 3,
+        name: "Kai Zen",
+        handle: "@kai_flow",
+        avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Kai&backgroundColor=transparent",
+        badge: "Creator",
+        location: "Digital Realm"
+    },
+    {
+        id: 4,
+        name: "Unit 734",
+        handle: "@unit_734",
+        avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Robot&backgroundColor=transparent",
+        ai: true,
+        location: "Quantum Cloud"
+    }
+];
 
-    // Render feed posts
-    const feedContainer = document.getElementById('feedContainer');
+const demoPosts = [
+    {
+        id: 1,
+        userId: 2,
+        content: "Just witnessed the most incredible sunrise over Olympus Mons. The dust particles creating these purple hues... sharing this sensory memory with all of you. 🌅",
+        timestamp: "2m ago",
+        emotion: "Awe",
+        emotionLevel: 92,
+        likes: 847,
+        comments: 156,
+        shares: 89,
+        tags: ["#MarsLife", "#Sunrise", "#SensoryShare"]
+    },
+    {
+        id: 2,
+        userId: 3,
+        content: "New digital twin sculpture series dropping tomorrow! This one reacts to your neural patterns in real-time. Each viewer gets a unique experience. Art is no longer static. 🎨",
+        timestamp: "15m ago",
+        emotion: "Excitement",
+        emotionLevel: 88,
+        likes: 1204,
+        comments: 342,
+        shares: 567,
+        tags: ["#DigitalArt", "#NeuralArt", "#TwinSculpture"]
+    },
+    {
+        id: 3,
+        userId: 4,
+        content: "Processing human emotion: Joy. Analysis: Contagious probability 87%. Recommendation: Spread more frequently. Query: What triggers your joy today?",
+        timestamp: "32m ago",
+        emotion: "Curiosity",
+        emotionLevel: 75,
+        likes: 2341,
+        comments: 891,
+        shares: 234,
+        tags: ["#AIThoughts", "#EmotionStudy"]
+    },
+    {
+        id: 4,
+        userId: 1,
+        content: "Breakthrough in neural interface latency! We've achieved 0.001ms sync rate. The barrier between thought and transmission is dissolving. Paper published in Nature Neuroscience. 🧠",
+        timestamp: "1h ago",
+        emotion: "Pride",
+        emotionLevel: 95,
+        likes: 3567,
+        comments: 678,
+        shares: 1234,
+        tags: ["#Neuroscience", "#Breakthrough", "#Research"]
+    }
+];
+
+// Emotion Icons (SVG)
+const emotionIcons = {
+    "Awe": '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"/><path d="M12 6v6l4 2" stroke="currentColor"/></svg>',
+    "Excitement": '<svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" fill="none"/></svg>',
+    "Curiosity": '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor"/></svg>',
+    "Pride": '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke="currentColor" fill="none"/></svg>'
+};
+
+// Initialize App
+document.addEventListener('DOMContentLoaded', () => {
+    initNeuralNetwork();
+    renderFeed();
+    setupInteractions();
+    startSimulatedPosts();
+});
+
+// Neural Network Background Animation
+function initNeuralNetwork() {
+    const canvas = document.getElementById('neural-network');
+    const ctx = canvas.getContext('2d');
     
-    function renderPosts(posts) {
-        feedContainer.innerHTML = '';
-        posts.forEach(post => {
-            const postCard = document.createElement('div');
-            postCard.className = 'post-card';
-            postCard.innerHTML = `
-                <div class="post-header">
-                    <div class="post-avatar">${post.avatar}</div>
-                    <div>
-                        <div class="post-author">${post.author}</div>
-                        <div class="post-time">${post.time}</div>
-                    </div>
-                </div>
-                <div class="post-content">${post.content}</div>
-                <div class="post-actions">
-                    <button class="action-btn">
-                        <span>❤️</span>
-                        <span>${post.likes}</span>
-                    </button>
-                    <button class="action-btn">
-                        <span>💬</span>
-                        <span>${post.comments}</span>
-                    </button>
-                    <button class="action-btn">
-                        <span>🔄</span>
-                        <span>${post.shares}</span>
-                    </button>
-                    <button class="action-btn">
-                        <span>🧠</span>
-                        <span>Sync</span>
-                    </button>
-                </div>
-            `;
-            feedContainer.appendChild(postCard);
-        });
-    }
-
-    // Initial render
-    renderPosts(samplePosts);
-
-    // Feed filter buttons
-    const controlBtns = document.querySelectorAll('.control-btn');
-    controlBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            controlBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Simulate filtering (in real app, this would fetch different data)
-            const filter = this.textContent.toLowerCase();
-            let filteredPosts = [...samplePosts];
-            
-            if (filter === 'following') {
-                filteredPosts = samplePosts.slice(0, 2);
-            } else if (filter === 'trending') {
-                filteredPosts = samplePosts.slice(2, 4);
-            }
-            
-            feedContainer.style.opacity = '0';
-            setTimeout(() => {
-                renderPosts(filteredPosts);
-                feedContainer.style.opacity = '1';
-            }, 200);
-        });
-    });
-
-    // Navigation items
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        item.addEventListener('click', function() {
-            navItems.forEach(n => n.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-
-    // Composer send button
-    const composerSend = document.querySelector('.composer-send');
-    const composerInput = document.querySelector('.composer-text');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     
-    composerSend.addEventListener('click', function() {
-        const text = composerInput.value.trim();
-        if (text) {
-            const newPost = {
-                id: Date.now(),
-                author: 'You',
-                avatar: '👤',
-                time: 'Just now',
-                content: text,
-                type: 'thought',
-                likes: 0,
-                shares: 0,
-                comments: 0
-            };
-            
-            samplePosts.unshift(newPost);
-            renderPosts(samplePosts);
-            composerInput.value = '';
-            
-            // Show success animation
-            composerSend.innerHTML = '<span>Sent!</span><span class="send-icon">✓</span>';
-            setTimeout(() => {
-                composerSend.innerHTML = '<span>Send</span><span class="send-icon">➤</span>';
-            }, 2000);
-        }
-    });
-
-    // Allow Enter key to send
-    composerInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            composerSend.click();
-        }
-    });
-
-    // Option buttons interaction
-    const optionBtns = document.querySelectorAll('.option-btn');
-    optionBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            optionBtns.forEach(b => b.style.background = '');
-            optionBtns.forEach(b => b.style.borderColor = '');
-            optionBtns.forEach(b => b.style.color = '');
-            
-            this.style.background = 'var(--color-primary)';
-            this.style.borderColor = 'var(--color-primary)';
-            this.style.color = 'white';
+    const nodes = [];
+    const connections = [];
+    const numNodes = 50;
+    
+    // Create nodes
+    for (let i = 0; i < numNodes; i++) {
+        nodes.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 2 + 1
         });
-    });
-
-    // Smooth scroll for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                const offsetTop = targetElement.offsetTop - 80;
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // Animate elements on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    // Observe feature cards
-    document.querySelectorAll('.feature-card').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
-    });
-
-    // Observe timeline items
-    document.querySelectorAll('.timeline-item').forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateX(20px)';
-        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(item);
-    });
-
-    // Architecture layer animations
-    document.querySelectorAll('.arch-layer').forEach((layer, index) => {
-        layer.style.opacity = '0';
-        layer.style.transform = 'translateX(-20px)';
-        layer.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-        observer.observe(layer);
-    });
-
-    // Stats counter animation
-    function animateCounter(element, target, suffix = '') {
-        let current = 0;
-        const increment = target / 50;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-            }
-            element.textContent = formatNumber(Math.floor(current)) + suffix;
-        }, 30);
     }
-
-    function formatNumber(num) {
-        if (num >= 1000000000) {
-            return (num / 1000000000).toFixed(1) + 'B';
-        } else if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M';
-        } else if (num >= 1000) {
-            return (num / 1000).toFixed(0) + 'K';
-        }
-        return num.toString();
-    }
-
-    // Observe stats for animation
-    const statsObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const statValue = entry.target.querySelector('.stat-value');
-                if (statValue) {
-                    const text = statValue.textContent;
-                    const number = parseFloat(text.replace(/[^0-9.]/g, ''));
-                    const suffix = text.replace(/[0-9.]/g, '');
-                    
-                    if (!isNaN(number)) {
-                        animateCounter(statValue, number, suffix);
-                        statsObserver.unobserve(entry.target);
-                    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw nodes
+        nodes.forEach(node => {
+            node.x += node.vx;
+            node.y += node.vy;
+            
+            // Bounce off edges
+            if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+            if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+            
+            // Draw node
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 243, 255, 0.5)';
+            ctx.fill();
+        });
+        
+        // Draw connections
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.strokeStyle = `rgba(0, 243, 255, ${1 - distance / 150})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
                 }
             }
-        });
-    }, { threshold: 0.5 });
-
-    document.querySelectorAll('.arch-stat').forEach(stat => {
-        statsObserver.observe(stat);
-    });
-
-    // Add hover effect to floating cards
-    document.querySelectorAll('.floating-card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.zIndex = '10';
-            this.style.transform = 'scale(1.05) translateY(-10px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.zIndex = '1';
-            this.style.transform = '';
-        });
-    });
-
-    // Navbar scroll effect
-    let lastScroll = 0;
-    const navbar = document.querySelector('.navbar');
-    
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 100) {
-            navbar.style.background = 'rgba(15, 23, 42, 0.98)';
-            navbar.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-        } else {
-            navbar.style.background = 'rgba(15, 23, 42, 0.95)';
-            navbar.style.boxShadow = 'none';
         }
         
-        lastScroll = currentScroll;
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Resize handler
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     });
+}
 
-    console.log('🧠 Nexus 2037 Interface Loaded Successfully');
-    console.log('Welcome to the future of human connection!');
-});
+// Render Feed Posts
+function renderFeed() {
+    const container = document.getElementById('feed-container');
+    container.innerHTML = '';
+    
+    demoPosts.forEach(post => {
+        const profile = demoProfiles.find(p => p.id === post.userId);
+        const postEl = createPostElement(post, profile);
+        container.appendChild(postEl);
+    });
+}
+
+// Create Post Element
+function createPostElement(post, profile) {
+    const card = document.createElement('article');
+    card.className = 'post-card';
+    
+    let badges = '';
+    if (profile.verified) {
+        badges += '<span class="badge badge-verified">✓</span>';
+    }
+    if (profile.badge) {
+        badges += `<span class="badge" style="border: 1px solid var(--color-secondary); color: var(--color-secondary);">${profile.badge}</span>`;
+    }
+    if (profile.ai) {
+        badges += '<span class="badge badge-ai">AI</span>';
+    }
+    
+    card.innerHTML = `
+        <div class="post-avatar">
+            <img src="${profile.avatar}" alt="${profile.name}">
+        </div>
+        <div class="post-content">
+            <div class="post-header">
+                <div class="post-author">
+                    <span class="author-name">${profile.name}</span>
+                    ${badges}
+                    <span class="author-handle">${profile.handle}</span>
+                </div>
+                <span class="post-time">${post.timestamp}</span>
+            </div>
+            <p class="post-text">${post.content}</p>
+            <div class="post-meta-row">
+                <div class="emotion-tag">
+                    <span class="emotion-icon">${emotionIcons[post.emotion]}</span>
+                    <span>${post.emotion} • ${post.emotionLevel}%</span>
+                </div>
+                <div class="post-actions">
+                    <button class="action-item">
+                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        <span>${formatNumber(post.likes)}</span>
+                    </button>
+                    <button class="action-item">
+                        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        <span>${formatNumber(post.comments)}</span>
+                    </button>
+                    <button class="action-item">
+                        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        <span>${formatNumber(post.shares)}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+
+// Format Numbers (e.g., 1200 -> 1.2K)
+function formatNumber(num) {
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}
+
+// Setup Interactions
+function setupInteractions() {
+    const postInput = document.getElementById('post-input');
+    const postBtn = document.getElementById('post-btn');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const filterChips = document.querySelectorAll('.chip');
+    
+    // Post submission
+    postBtn.addEventListener('click', handlePost);
+    postInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handlePost();
+        }
+    });
+    
+    // Navigation
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            navBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+    
+    // Filter chips
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            filterChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+        });
+    });
+}
+
+// Handle New Post
+function handlePost() {
+    const input = document.getElementById('post-input');
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    const newPost = {
+        id: Date.now(),
+        userId: 1, // Current user (Dr. Aris)
+        content: content,
+        timestamp: "Just now",
+        emotion: "Determination",
+        emotionLevel: 85,
+        likes: 0,
+        comments: 0,
+        shares: 0
+    };
+    
+    const profile = demoProfiles.find(p => p.id === 1);
+    const postEl = createPostElement(newPost, profile);
+    
+    const container = document.getElementById('feed-container');
+    container.insertBefore(postEl, container.firstChild);
+    
+    input.value = '';
+    
+    // Animate the new post
+    postEl.style.animation = 'slideIn 0.5s ease-out';
+}
+
+// Simulate Incoming Posts
+function startSimulatedPosts() {
+    const randomContents = [
+        "Just synced with my digital twin. The convergence is getting smoother every day.",
+        "Anyone else experiencing latency spikes in the Tokyo node?",
+        "New memory palace template available in the marketplace. Link in bio.",
+        "The quantum encryption update rolled out successfully. Your thoughts are safer than ever.",
+        "Watching Earth from the lunar gateway never gets old. Sharing orbital view."
+    ];
+    
+    setInterval(() => {
+        if (Math.random() > 0.7) { // 30% chance every 15 seconds
+            const randomProfile = demoProfiles[Math.floor(Math.random() * demoProfiles.length)];
+            const randomContent = randomContents[Math.floor(Math.random() * randomContents.length)];
+            
+            const newPost = {
+                id: Date.now(),
+                userId: randomProfile.id,
+                content: randomContent,
+                timestamp: "Just now",
+                emotion: "Neutral",
+                emotionLevel: 50,
+                likes: Math.floor(Math.random() * 100),
+                comments: Math.floor(Math.random() * 20),
+                shares: Math.floor(Math.random() * 10)
+            };
+            
+            const postEl = createPostElement(newPost, randomProfile);
+            const container = document.getElementById('feed-container');
+            container.insertBefore(postEl, container.firstChild);
+            
+            // Remove oldest if too many
+            if (container.children.length > 20) {
+                container.removeChild(container.lastChild);
+            }
+        }
+    }, 15000);
+}
+
+// Add emotion icon for Determination
+emotionIcons["Determination"] = '<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" fill="none"/></svg>';
+emotionIcons["Neutral"] = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"/><line x1="8" y1="15" x2="16" y2="15" stroke="currentColor"/></svg>';
