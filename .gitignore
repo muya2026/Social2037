@@ -1,1 +1,62 @@
-Nothing should be ignored since only a README.md file was modified and no build artifacts, dependencies, or temporary files were detected in the changes.
+```
+# Compiled and build artifacts
+*.css.map
+*.js.map
+*.min.css
+*.min.js
+dist/
+build/
+*.o
+*.obj
+
+# Dependencies
+node_modules/
+.bower_components/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+*.coverage
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.coverage
+.tox/
+.pytest_cache/
+.mypy_cache/
+
+# Node.js specific
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+*.bundle.js
+*.bundle.css
+*.min.*
+```
